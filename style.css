@@ -14,7 +14,7 @@ body{
     margin: 0;
 }
 
-h1{
+.heading-primary{
     font-size: 48px;
     color: #fff;
 }
@@ -26,6 +26,7 @@ h1{
     background-color: #000;
     color: #fff;
     border-radius: 9px;
+    font-size: 16px;
 }
 
 .btn:focus{
@@ -37,7 +38,7 @@ h1{
 }
 
 .btn:active{
-    transform: scale(0.9);
+    transform: scale(0.98);
 }
 
 .rules-btn{
@@ -53,18 +54,18 @@ h1{
     background-color: #333;
     color: #fff;
     min-height: 100vh;
-    width: 400px;
     padding: 20px;
     line-height: 1.5;
     transform: translateX(-400px);
     transition: transform 1s ease-in-out;
+    width: 400px;
 }
 
 .rules.show{
     transform: translateX(0);
 }
 
-canvas{
+.canvas{
     background-color: #f0f0f0;
     display: block;
     border-radius: 9px;

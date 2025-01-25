@@ -5,7 +5,13 @@ const closeBtnEl = document.getElementById('close-btn');
 const canvasEl = document.getElementById('canvas');
 const ctx = canvasEl.getContext('2d');
 
+const canvasFillStyle = '#0095dd';
+const canvasFont = '20px Arial';
+
 let score = 0;
+
+const brickRowCount = 9;
+const brickColumnCount = 5;
 
 // Rules Show Event Handlers
 rulesBtnEl.addEventListener('click', showRules);
@@ -41,23 +47,68 @@ const paddlePropsObj = {
     dirXAxis: 4,
 }
 
+// Create brick props:
+const brickPropsObj = {
+    width: 70,
+    height: 20,
+    padding: 10,
+    offsetX: 45,
+    offsetY: 60,
+    visible: true
+}
 
-// Draw ball on canvas
+// Draw ball on canvas: Creating a circle using canvas
 function drawBall() {
     ctx.beginPath();
     ctx.arc(ballPropsObj.xAxis, ballPropsObj.yAxis, ballPropsObj.size, 0, Math.PI * 2);
-    ctx.fillStyle = '#0095dd';
+    ctx.fillStyle = canvasFillStyle;
     ctx.fill();
     ctx.closePath();
 }
 
-// Draw paddle on canvas
+// Draw paddle on canvas: Creating a rectangle using canvas
 function drawPaddle() {
     ctx.beginPath();
     ctx.rect(paddlePropsObj.xAxis, paddlePropsObj.yAxis, paddlePropsObj.width, paddlePropsObj.height);
-    ctx.fillStyle = '#0095dd';
+    ctx.fillStyle = canvasFillStyle;
     ctx.fill();
     ctx.closePath();
+}
+
+// Draw score on canvas; Writing text using canvas
+function drawScore(){
+    ctx.font = canvasFont;
+    ctx.fillText(`Score: ${score}`, canvasEl.width - 100, 30);
+}
+
+
+// Create bricks
+
+const bricks = [];
+
+for(let rowI = 0; rowI < brickRowCount; rowI++){
+    bricks[rowI] = [];
+
+    for(let rowJ = 0; rowJ < brickColumnCount; rowJ++){
+        const xAxis = rowI * (brickPropsObj.width + brickPropsObj.padding) + brickPropsObj.offsetX;
+        const yAxis = rowJ * (brickPropsObj.height + brickPropsObj.padding) + brickPropsObj.offsetY;
+
+        bricks[rowI][rowJ] = { xAxis, yAxis, ...brickPropsObj};
+    }
+}
+
+// Draw bricks on canvas: Creating a rectangle using canvas;
+
+function drawBricks() {
+    bricks.forEach(brickCol => {
+        brickCol.forEach(brick => {
+            ctx.beginPath();
+            ctx.rect(brick.xAxis, brick.yAxis, brick.width, brick.height);
+            ctx.fillStyle = brick.visible ? canvasFillStyle : 'transparent';
+            ctx.fill();
+            ctx.closePath();
+        })
+    })
 }
 
 // Draw everything;
@@ -65,13 +116,9 @@ function draw(){
     drawBall();
     drawPaddle();
     drawScore();
+    drawBricks();
 }
 
-// Draw score on canvas;
-function drawScore(){
-    ctx.font = '20px Arial';
-    ctx.fillText(`Score: ${score}`, canvasEl.width - 100, 30);
-}
 draw();
 
 // ctx.fillStyle = 'green';
