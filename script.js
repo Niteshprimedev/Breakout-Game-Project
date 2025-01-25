@@ -12,6 +12,7 @@ let score = 0;
 
 const brickRowCount = 9;
 const brickColumnCount = 5;
+const delay = 500; // delay to reset the game;
 
 // Rules Show Event Handlers
 rulesBtnEl.addEventListener('click', showRules);
@@ -43,7 +44,7 @@ const paddlePropsObj = {
     yAxis: canvasEl.height - 20,
     width: 80,
     height: 10,
-    speed: 4,
+    speed: 8,
     dirXAxis: 0,
 }
 
@@ -116,8 +117,8 @@ function draw(){
 
     drawBall();
     drawPaddle();
-    drawBricks();
     drawScore();
+    drawBricks();
 }
 
 function movePaddle(){
@@ -174,10 +175,52 @@ function moveBall(){
                 if(isLeftBrickHit && isRightBrickHit && isTopBrickHit && isBottomBrickHit){
                     ballPropsObj.dirYAxis *= -1;
                     brick.visible = false;
+
+                    increaseScore();
                 }
             }
-        })
-    })
+        });
+    });
+
+    // Hit Bottom Wall & Lose;
+    const isPaddleMissed = ballPropsObj.yAxis + ballPropsObj.size > canvasEl.height;
+
+    // if(isPaddleMissed){
+    //     showAllBricks();
+    //     score = 0;
+    // }
+}
+
+// Increase Score;
+function increaseScore() {
+    score++;
+
+    // All the Balls Hit;
+    // const allBricksHit = score >= bricks.length * bricks[0].length;
+    const allBricksCleared = score % (brickRowCount * brickRowCount) === 0;
+
+    if(allBricksCleared){
+        showAllBricks();
+
+        //After 0.5 sec restart the game
+        setTimeout(function () {
+            showAllBricks();
+            score = 0;
+            paddle.x = canvas.width / 2 - 40;
+            paddle.y = canvas.height - 20;
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height / 2;
+            ball.visible = true;
+            paddle.visible = true;
+        },delay);
+    }
+}
+
+// Make All Bricks appear;
+function showAllBricks(){
+    bricks.forEach(brickColumn => {
+        brickColumn.forEach(brick => (brick.visible = true));
+    });
 }
 
 // Keyboard event handlers;
