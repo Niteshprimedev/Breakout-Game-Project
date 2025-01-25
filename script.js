@@ -197,7 +197,7 @@ function increaseScore() {
 
     // All the Balls Hit;
     // const allBricksHit = score >= bricks.length * bricks[0].length;
-    const allBricksCleared = score % (brickRowCount * brickRowCount) === 0;
+    const allBricksCleared = score % (brickRowCount * brickColumnCount) === 0;
 
     if(allBricksCleared){
         showAllBricks();
@@ -205,7 +205,8 @@ function increaseScore() {
         //After 0.5 sec restart the game
         setTimeout(function () {
             showAllBricks();
-            score = 0;
+            // score = 0; // we don't want to reset the score if user hits all the bricks;
+            // Instead: To Do - Allow User to reset the game;
             paddlePropsObj.xAxis = (canvasEl.width / 2) - 40;
             paddlePropsObj.yAxis = canvasEl.height - 20;
             ballPropsObj.xAxis = canvasEl.width / 2;
