@@ -138,6 +138,48 @@ function movePaddle(){
     }
 }
 
+// Move Ball on canvas;
+function moveBall(){
+    ballPropsObj.xAxis += ballPropsObj.dirXAxis;
+    ballPropsObj.yAxis += ballPropsObj.dirYAxis;
+
+    // Canvas Left/Right wall collision Detection;
+    const isCanvasLeftRightCollision = ballPropsObj.xAxis + ballPropsObj.size > canvasEl.width || ballPropsObj.xAxis - ballPropsObj.size < 0;
+
+    if(isCanvasLeftRightCollision){
+        ballPropsObj.dirXAxis *= -1;
+    }
+
+    // Canvas Top/Bottom wall collision Detection;
+    const isCanvasTopBottomCollision = ballPropsObj.yAxis + ballPropsObj.size > canvasEl.height || ballPropsObj.yAxis - ballPropsObj.size < 0;
+    if(isCanvasTopBottomCollision){
+        ballPropsObj.dirYAxis *= -1;
+    }
+
+    // Canvas Ball & Paddle Collision Detection;
+    const isCanvasBallPaddleCollision = ballPropsObj.xAxis - ballPropsObj.size > paddlePropsObj.xAxis && ballPropsObj.xAxis + ballPropsObj.size < paddlePropsObj.xAxis + paddlePropsObj.width && ballPropsObj.yAxis + ballPropsObj.size > paddlePropsObj.yAxis;
+
+    if(isCanvasBallPaddleCollision){
+        ballPropsObj.dirYAxis = -ballPropsObj.speed;
+    }
+
+    // Bricks Collision;
+    bricks.forEach(brickColumn => {
+        brickColumn.forEach(brick => {
+            if(brick.visible){
+                const isLeftBrickHit = ballPropsObj.xAxis - ballPropsObj.size > brick.xAxis;
+                const isRightBrickHit = ballPropsObj.xAxis + ballPropsObj.size < brick.xAxis + brick.width;
+                const isTopBrickHit = ballPropsObj.yAxis + ballPropsObj.size > brick.yAxis;
+                const isBottomBrickHit = ballPropsObj.yAxis - ballPropsObj.size < brick.yAxis + brick.height;
+                if(isLeftBrickHit && isRightBrickHit && isTopBrickHit && isBottomBrickHit){
+                    ballPropsObj.dirYAxis *= -1;
+                    brick.visible = false;
+                }
+            }
+        })
+    })
+}
+
 // Keyboard event handlers;
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
@@ -163,7 +205,8 @@ function keyUp(keyEventEl){
 // Update canvas drawing and animation
 function update() {
     movePaddle();
-  
+    moveBall();
+
     // Draw everything
     draw();
   
