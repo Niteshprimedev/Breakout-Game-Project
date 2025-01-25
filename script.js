@@ -185,10 +185,10 @@ function moveBall(){
     // Hit Bottom Wall & Lose;
     const isPaddleMissed = ballPropsObj.yAxis + ballPropsObj.size > canvasEl.height;
 
-    // if(isPaddleMissed){
-    //     showAllBricks();
-    //     score = 0;
-    // }
+    if(isPaddleMissed){
+        showAllBricks();
+        score = 0;
+    }
 }
 
 // Increase Score;
@@ -206,12 +206,11 @@ function increaseScore() {
         setTimeout(function () {
             showAllBricks();
             score = 0;
-            paddle.x = canvas.width / 2 - 40;
-            paddle.y = canvas.height - 20;
-            ball.x = canvas.width / 2;
-            ball.y = canvas.height / 2;
-            ball.visible = true;
-            paddle.visible = true;
+            paddlePropsObj.xAxis = (canvasEl.width / 2) - 40;
+            paddlePropsObj.yAxis = canvasEl.height - 20;
+            ballPropsObj.xAxis = canvasEl.width / 2;
+            ballPropsObj.yAxis = canvasEl.height / 2;
+            ballPropsObj.visible = true;
         },delay);
     }
 }
