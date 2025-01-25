@@ -44,7 +44,7 @@ const paddlePropsObj = {
     width: 80,
     height: 10,
     speed: 4,
-    dirXAxis: 4,
+    dirXAxis: 0,
 }
 
 // Create brick props:
@@ -75,15 +75,7 @@ function drawPaddle() {
     ctx.closePath();
 }
 
-// Draw score on canvas; Writing text using canvas
-function drawScore(){
-    ctx.font = canvasFont;
-    ctx.fillText(`Score: ${score}`, canvasEl.width - 100, 30);
-}
-
-
 // Create bricks
-
 const bricks = [];
 
 for(let rowI = 0; rowI < brickRowCount; rowI++){
@@ -98,7 +90,6 @@ for(let rowI = 0; rowI < brickRowCount; rowI++){
 }
 
 // Draw bricks on canvas: Creating a rectangle using canvas;
-
 function drawBricks() {
     bricks.forEach(brickCol => {
         brickCol.forEach(brick => {
@@ -111,15 +102,75 @@ function drawBricks() {
     })
 }
 
-// Draw everything;
-function draw(){
-    drawBall();
-    drawPaddle();
-    drawScore();
-    drawBricks();
+// Draw score on canvas; Writing text using canvas
+function drawScore(){
+    ctx.font = canvasFont;
+    ctx.fillText(`Score: ${score}`, canvasEl.width - 100, 30);
 }
 
-draw();
+// Draw everything;
+function draw(){
+
+    // clear paddle on canvas
+    ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+
+    drawBall();
+    drawPaddle();
+    drawBricks();
+    drawScore();
+}
+
+function movePaddle(){
+    paddlePropsObj.xAxis += paddlePropsObj.dirXAxis;
+
+    // Camvas Right Wall detection:
+    const isCanvasRightWidthCrossed = paddlePropsObj.xAxis + paddlePropsObj.width > canvasEl.width;
+    
+    if(isCanvasRightWidthCrossed){
+        paddlePropsObj.xAxis = canvasEl.width - paddlePropsObj.width;
+    }
+    
+    // Canvas Left Wall detection:
+    const isCanvasLeftWidthCrossed = paddlePropsObj.xAxis < 0;
+
+    if(isCanvasLeftWidthCrossed){
+        paddlePropsObj.xAxis = 0;
+    }
+}
+
+// Keyboard event handlers;
+document.addEventListener('keydown', keyDown);
+document.addEventListener('keyup', keyUp);
+
+// Key Down Event
+function keyDown(keyEventEl){
+    
+    if(keyEventEl.key === 'ArrowRight' || keyEventEl.key === 'Right'){
+        paddlePropsObj.dirXAxis = paddlePropsObj.speed;
+    }
+    else if(keyEventEl.key === 'ArrowLeft' || keyEventEl.key === 'Left'){
+        paddlePropsObj.dirXAxis = -paddlePropsObj.speed;
+    }
+}
+
+// Key Up Event
+function keyUp(keyEventEl){
+    if(keyEventEl.key === 'ArrowRight' || keyEventEl.key === 'Right' || keyEventEl.key === 'ArrowLeft' || keyEventEl.key === 'Left'){
+        paddlePropsObj.dirXAxis = 0;
+    }
+}
+
+// Update canvas drawing and animation
+function update() {
+    movePaddle();
+  
+    // Draw everything
+    draw();
+  
+    requestAnimationFrame(update);
+  }
+  
+  update();
 
 // ctx.fillStyle = 'green';
 // ctx.fillRect(10, 10, 150, 100);
